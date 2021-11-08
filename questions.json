@@ -1,0 +1,16 @@
+{
+    "questions": [
+        {
+            "question": "Co to droga?",
+            "branch": "Kinematyka"
+        },
+        {
+            "question": "Co to prędkość?",
+            "branch": "Kinematyka"
+        },
+        {
+            "question": "Czym jest układ inercjalny?",
+            "branch": "Dynamika"
+        }
+    ]
+}
