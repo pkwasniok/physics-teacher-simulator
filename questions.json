@@ -1,14 +1,17 @@
 {
     "questions": [
         {
-            "question": "Co to droga?",
+            "question-id": 1,
+            "question": "Wyjaśnij pojęcie \"droga\"",
             "branch": "Kinematyka"
         },
         {
-            "question": "Co to prędkość?",
+            "question-id": 2,
+            "question": "Wyjaśnij pojęcie \"droga\"",
             "branch": "Kinematyka"
         },
         {
+            "question-id": 3,
             "question": "Czym jest układ inercjalny?",
             "branch": "Dynamika"
         }
