@@ -7,18 +7,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Physics teacher simulator</title>
 
+    <!--Google fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Roboto+Slab&display=swap"
         rel="stylesheet">
 
+    <!--Css-->
     <link rel="stylesheet" href="style.css">
+
+    <link rel="icon" href="./img/icon.ico" />
 </head>
 
 <body>
     <div id="container">
         <div id="left-bar">
-            <h1>Physics teacher simulator</h1>
+            <span>
+                <h1>Physics <br>teacher <br>simulator</h1>
+                <span id="user-panel">
+                    <span id="user-img"></span>
+                    <span id="user-name"></span>
+                    <button id="login" onclick="auth0_login()">Login</button>
+                    <button id="logout" onclick="auth0_logout()">Logout</button>
+                </span>
+            </span>
             <span id="signature">Made by: <a href="https://github.com/pkwasniok">pkwasniok</a></span>
         </div>
         <div id="main">
@@ -44,7 +56,9 @@
     </div>
 </body>
 
-<script src="./index.js"></script>
+<!--Auth0-->
+<script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
 
+<script src="./index.js"></script>
 
 </html>
