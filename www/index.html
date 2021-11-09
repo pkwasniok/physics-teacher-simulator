@@ -24,33 +24,37 @@
         <div id="left-bar">
             <span>
                 <h1>Physics <br>teacher <br>simulator</h1>
-                <span id="user-panel">
-                    <span id="user-img"></span>
-                    <span id="user-name"></span>
-                    <button id="login" onclick="auth0_login()">Login</button>
-                    <button id="logout" onclick="auth0_logout()">Logout</button>
-                </span>
             </span>
+            <span id="user-panel">
+                <span id="user-img"></span>
+                <span id="user-name"></span>
+                <button>Settings</button>
+                <button>Your answers</button>
+                <button>About</button>
+            </span>
+            <button id="login" onclick="auth0_login()">Login</button>
+            <button id="logout" onclick="auth0_logout()">Logout</button>
             <span id="signature">Made by: <a href="https://github.com/pkwasniok">pkwasniok</a></span>
         </div>
+        <span class="vertical-separator"></span>
         <div id="main">
             <p id="question"></p>
             <p id="branch"> Kinematyka </p>
             <textarea id="main-textarea"></textarea>
-            <button id="main-submit">Submit</button>
+            <button>Submit</button>
         </div>
         <div id="right-bar">
             <span class='right-bar-button selected'>
-                <h3>Daily question</h3>
+                <h3>Daily <br> question</h3>
             </span>
             <span class="right-bar-button">
-                <h3>Review answers</h3>
+                <h3>Review <br> answers</h3>
             </span>
             <span class="right-bar-button">
                 <h3>Ranking</h3>
             </span>
             <span class='right-bar-button'>
-                <h3>Add new question</h3>
+                <h3>Add new <br> question</h3>
             </span>
         </div>
     </div>

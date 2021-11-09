@@ -31,18 +31,23 @@ const updateUi = async () => {
     const isAuthenticated = await auth0.isAuthenticated();
     document.getElementById('login').disabled = isAuthenticated;
     document.getElementById('logout').disabled = !isAuthenticated;
+    document.getElementById('user-panel').style.visibility = (!isAuthenticated ? "hidden" : "visible");
 
     if (isAuthenticated) {
         const user = await auth0.getUser()
 
         document.getElementById('user-img').innerHTML = "<img src=\"" + user.picture + "\">"
-        document.getElementById('user-name').innerHTML = user.given_name
+        document.getElementById('user-name').innerHTML = user.name
 
         console.log(user)
     }
 }
 
 window.onload = async () => {
+    document.getElementById('login').disabled = false;
+    document.getElementById('logout').disabled = true
+    document.getElementById('user-panel').style.visibility = "hidden";
+
     await configureClient();
 
     updateUi();

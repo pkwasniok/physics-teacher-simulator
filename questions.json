@@ -1,19 +1,20 @@
 {
     "questions": [
         {
-            "question-id": 1,
-            "question": "Wyjaśnij pojęcie \"ruch\"",
+            "question": "Czym jest szybkość kątowa?",
             "branch": "Kinematyka"
         },
         {
-            "question-id": 2,
-            "question": "Wyjaśnij pojęcie \"droga\"",
+            "question": "Czym jest prędkość kątowa?",
             "branch": "Kinematyka"
         },
         {
-            "question-id": 3,
-            "question": "Czym jest układ inercjalny?",
-            "branch": "Dynamika"
+            "question": "Jaka jest różnica pomiędzy prędkością kątową a szybkością kątową?",
+            "branch": "Kinematyka"
+        },
+        {
+            "question": "Wyjaśnij czym jest przyśpieszenie kątowe",
+            "branch": "Kinematyka"
         }
     ]
 }
