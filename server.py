@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 import json
 import random
@@ -16,10 +16,21 @@ cors = CORS(api, resources={r"/*": {"origins": "*"}})
 
 # Create connection with mysql
 mydb = mysql.connector.connect(
-    host=config.database.host,
-    user=config.database.user,
-    password=config.database.password
+    host=config['database']['host'],
+    user=config['database']['user'],
+    password=config['database']['password'],
+    database=config['database']['database']
 )
+
+
+def db_connect():
+    return mysql.connector.connect(
+        host=config['database']['host'],
+        user=config['database']['user'],
+        password=config['database']['password'],
+        database=config['database']['database']
+    )
+
 
 # Variables
 daily_questions = []
@@ -48,9 +59,23 @@ def home():
     return response
 
 
-@api.route('/user', methods=['GET'])
+@api.route('/answer', methods=['POST'])
 def users():
-    return 'essa'
+    print(request.json['question'])
+    question = request.json['question']
+    answer = request.json['answer']
+    email = request.json['email']
+
+    mydb = db_connect()
+    cursor = mydb.cursor()
+
+    sql = 'INSERT INTO answers (question, answer, email) VALUES (%s, %s, %s)'
+    val = (question, answer, email)
+    cursor.execute(sql, val)
+
+    mydb.commit()
+
+    return 'OK'
 
 
 if __name__ == '__main__':
