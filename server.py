@@ -59,8 +59,23 @@ def home():
     return response
 
 
-@api.route('/answer', methods=['POST'])
+@api.route('/users', methods=['GET'])
 def users():
+    mydb = db_connect()
+    cursor = mydb.cursor()
+    cursor.execute('SELECT * FROM users')
+    mysql_data = cursor.fetchall()
+
+    response = {"users": []}
+    for user_data in mysql_data:
+        response['users'].append({"email": user_data[1], "username": user_data[2], "points": user_data[3]})
+
+    print(response)
+    return 'OK'
+
+
+@api.route('/answer', methods=['POST'])
+def answers():
     print(request.json['question'])
     question = request.json['question']
     answer = request.json['answer']

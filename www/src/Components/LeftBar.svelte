@@ -1,6 +1,9 @@
 <div>
     <h1>Physics⚛️ <br /> teacher <br /> simulator</h1>
-    <h3>Made by: <a>pkwasniok</a></h3>
+    <h3>
+        Made by:
+        <a href="https://github.com/pkwasniok" target="blank"> pkwasniok </a>
+    </h3>
 </div>
 
 <style>

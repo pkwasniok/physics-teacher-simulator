@@ -2,12 +2,14 @@
 	import LeftBar from "./Components/LeftBar.svelte";
 	import Main from "./Components/Main.svelte";
 	import RightBar from "./Components/RightBar.svelte";
+
+	let tab = 2;
 </script>
 
 <div>
 	<LeftBar />
-	<Main />
-	<RightBar />
+	<Main {tab} />
+	<RightBar bind:selection={tab} />
 </div>
 
 <style>

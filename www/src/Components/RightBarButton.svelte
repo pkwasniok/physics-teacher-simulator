@@ -11,6 +11,7 @@
         background: transparent;
 
         border: none;
+        border-radius: 15px 0 0 15px;
         border-right: 0px white solid;
 
         font-size: 43px;
@@ -19,10 +20,16 @@
         font-family: "Nunito";
 
         transition: all 0.2s linear;
+
+        cursor: pointer;
     }
 
     button:hover {
         border-width: 15px;
+    }
+
+    button:active {
+        background-color: rgba(0, 0, 0, 0);
     }
 
     .selected {
