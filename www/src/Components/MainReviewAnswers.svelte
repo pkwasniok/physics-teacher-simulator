@@ -1,6 +1,15 @@
 <script>
 </script>
 
-<div>
-    <h3>Review answers</h3>
-</div>
+<div />
+
+<style>
+    div {
+        height: 100%;
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>

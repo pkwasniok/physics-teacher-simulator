@@ -5,15 +5,16 @@
     import MainAddNewQuestion from "./MainAddNewQuestion.svelte";
 
     export let tab = 0;
+    export let backend_server;
 </script>
 
 <div>
     {#if tab == 0}
-        <MainDailyQuestion />
+        <MainDailyQuestion {backend_server} />
     {:else if tab == 1}
         <MainReviewAnswers />
     {:else if tab == 2}
-        <MainRanking />
+        <MainRanking {backend_server} />
     {:else if tab == 3}
         <MainAddNewQuestion />
     {/if}

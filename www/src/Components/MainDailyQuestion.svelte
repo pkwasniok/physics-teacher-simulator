@@ -1,13 +1,45 @@
 <script>
     import Button from "./Misc/Button.svelte";
+    import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
+
+    export let backend_server;
+
+    const fetchDailyQuestion = (async () => {
+        const response = fetch(backend_server + "daily_question");
+        return (await response).json();
+    })();
+
+    const postAnswer = (answer, question, email) => {
+        let data = {
+            question: question,
+            answer: answer,
+            email: email,
+        };
+
+        fetch(backend_server + "answer", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+    };
 </script>
 
 <div>
-    <h2>Wyjaśnij pojęcie ruch oraz podaj kilka przykładów ruchu</h2>
-    <h3>Kinematyka</h3>
-
-    <textarea resizeable="none" placeholder="Type your answer here..." />
-    <Button>Submit</Button>
+    {#await fetchDailyQuestion}
+        <LoadingIndicator />
+    {:then daily_question}
+        <h2>{daily_question.question}</h2>
+        <h3>{daily_question.branch}</h3>
+        <textarea resizeable="none" placeholder="Type your answer here..." />
+        <Button
+            on:click={() =>
+                postAnswer(
+                    "Essa",
+                    daily_question.question,
+                    "kwasniokpatryk@gmail.com"
+                )}>Submit</Button
+        >
+    {/await}
 </div>
 
 <style>

@@ -1,4 +1,8 @@
-<button on:click><slot /></button>
+<script>
+    export let disabled = false;
+</script>
+
+<button on:click {disabled}><slot /></button>
 
 <style>
     button {
@@ -28,5 +32,9 @@
 
     button:active {
         background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    button:disabled {
+        visibility: hidden;
     }
 </style>

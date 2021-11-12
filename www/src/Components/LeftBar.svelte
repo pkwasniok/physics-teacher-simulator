@@ -1,5 +1,15 @@
+<script>
+    import Button from "./Misc/Button.svelte";
+</script>
+
 <div>
     <h1>Physics⚛️ <br /> teacher <br /> simulator</h1>
+
+    <span>
+        <Button>Login</Button>
+        <Button disabled={true}>Logout</Button>
+    </span>
+
     <h3>
         Made by:
         <a href="https://github.com/pkwasniok" target="blank"> pkwasniok </a>
@@ -44,6 +54,13 @@
         margin-bottom: 8px;
 
         cursor: default;
+    }
+
+    span {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
     a {

@@ -1,27 +1,30 @@
 <script>
-    import { dataset_dev } from "svelte/internal";
-    import App from "../App.svelte";
+    import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
 
-    const fetchUsers = async () => {
-        const response = self.fetch("http://127.0.0.1:5000/users", {
-            mode: "no-cors",
-        });
+    export let backend_server;
 
-        console.log(response);
-
-        if (response.ok) {
-            console.log(response);
-            return response;
-        }
-    };
+    const fetchUsers = (async () => {
+        const response = fetch(backend_server + "users");
+        return (await response).json();
+    })();
 </script>
 
 <div>
     {#await fetchUsers}
-        <h3>Loading data...</h3>
+        <LoadingIndicator />
     {:then users}
-        {console.log(users)}
-        <h2>{users}</h2>
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Points</th>
+            </tr>
+            {#each users.users as user}
+                <tr>
+                    <th>{user.username}</th>
+                    <th>{user.points}⭐</th>
+                </tr>
+            {/each}
+        </table>
     {/await}
 </div>
 
@@ -38,7 +41,7 @@
 
     table,
     th,
-    td {
+    tr {
         border: 3px solid #afafaf;
         border-collapse: collapse;
     }
