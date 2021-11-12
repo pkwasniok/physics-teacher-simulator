@@ -3,6 +3,9 @@
     import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
 
     export let backend_server;
+    export let user;
+
+    let answer;
 
     const fetchDailyQuestion = (async () => {
         const response = fetch(backend_server + "daily_question");
@@ -30,14 +33,15 @@
     {:then daily_question}
         <h2>{daily_question.question}</h2>
         <h3>{daily_question.branch}</h3>
-        <textarea resizeable="none" placeholder="Type your answer here..." />
+        <textarea
+            bind:value={answer}
+            resizeable="none"
+            placeholder="Type your answer here..."
+        />
         <Button
             on:click={() =>
-                postAnswer(
-                    "Essa",
-                    daily_question.question,
-                    "kwasniokpatryk@gmail.com"
-                )}>Submit</Button
+                postAnswer(answer, daily_question.question, user.email)}
+            >Submit</Button
         >
     {/await}
 </div>

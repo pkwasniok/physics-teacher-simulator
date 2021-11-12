@@ -14,14 +14,6 @@ questions = json.load(open('./questions.json', encoding='utf-8'))
 api = Flask(__name__)
 cors = CORS(api, resources={r"/*": {"origins": "*"}})
 
-# Create connection with mysql
-mydb = mysql.connector.connect(
-    host=config['database']['host'],
-    user=config['database']['user'],
-    password=config['database']['password'],
-    database=config['database']['database']
-)
-
 
 def db_connect():
     return mysql.connector.connect(
@@ -41,8 +33,6 @@ def daily_question():
     # Load questions and config
     questions = json.load(open('./questions.json', encoding='utf-8'))
     config = json.load(open('./config.json', encoding='utf-8'))
-
-    print(mydb)
 
     # Check if there are any daily questions left
     global daily_questions
@@ -75,8 +65,7 @@ def users():
 
 
 @api.route('/answer', methods=['POST'])
-def answers():
-    print(request.json)
+def answer():
     question = request.json['question']
     answer = request.json['answer']
     email = request.json['email']
@@ -91,6 +80,32 @@ def answers():
     mydb.commit()
 
     return 'OK'
+
+
+@api.route('/answers', methods=['GET'])
+def answers():
+    mydb = db_connect()
+    cursor = mydb.cursor()
+
+    # Fetch data from database
+    cursor.execute('SELECT * FROM answers')
+    answers = cursor.fetchall()
+    cursor.execute('SELECT * from users')
+    users = cursor.fetchall()
+
+    # Get list of all usernames and email
+    usernames = {}
+    for user in users:
+        usernames[user[1]] = user[2]
+
+    print(usernames)
+
+    # Create response
+    response = {"answers": []}
+    for answer in answers:
+        response['answers'].append({"question": answer[1], "answer": answer[2], "username": usernames[answer[3]]})
+
+    return response
 
 
 if __name__ == '__main__':

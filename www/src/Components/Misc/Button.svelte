@@ -1,8 +1,11 @@
 <script>
     export let disabled = false;
+    export let hidden = false;
 </script>
 
-<button on:click {disabled}><slot /></button>
+{#if !hidden}
+    <button on:click {disabled}><slot /></button>
+{/if}
 
 <style>
     button {
@@ -35,6 +38,6 @@
     }
 
     button:disabled {
-        visibility: hidden;
+        color: #afaf;
     }
 </style>

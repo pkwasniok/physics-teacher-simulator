@@ -1,4 +1,4 @@
-config = {
+let config = {
     "backend": {
         "ip": "http://localhost:5000/"
     },

@@ -3,6 +3,6 @@
         "host": "127.0.0.1",
         "user": "root",
         "password": "",
-        "database": "physics_teachersimulator"
+        "database": "physics_teacher_simulator"
     }
 }

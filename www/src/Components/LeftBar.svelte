@@ -1,13 +1,24 @@
 <script>
     import Button from "./Misc/Button.svelte";
+
+    export let isAuthenticated;
+    export let user;
+
+    export let login;
+    export let logout;
 </script>
 
 <div>
     <h1>Physics⚛️ <br /> teacher <br /> simulator</h1>
 
     <span>
-        <Button>Login</Button>
-        <Button disabled={true}>Logout</Button>
+        {#if isAuthenticated}
+            <img src={user.picture} alt="" />
+            <Button>Settings</Button>
+            <Button>You answers</Button>
+        {/if}
+        <Button hidden={isAuthenticated} on:click={login}>Login</Button>
+        <Button hidden={!isAuthenticated} on:click={logout}>Logout</Button>
     </span>
 
     <h3>
@@ -23,11 +34,15 @@
 
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
 
         color: white;
         font-family: "Nunito";
+    }
+
+    img {
+        border-radius: 50%;
     }
 
     h1 {
@@ -57,10 +72,13 @@
     }
 
     span {
+        height: 70%;
+
+        margin-left: 18%;
+
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
     }
 
     a {

@@ -7,21 +7,80 @@
 	import config from "./config";
 
 	import createAuth0Client from "@auth0/auth0-spa-js";
+	import LoadingIndicator from "./Components/Misc/LoadingIndicator.svelte";
 
-	let tab = 0;
-	let backend_server = "http://localhost:5000/";
+	let tab = 1;
+	let backend_server = config.backend.ip;
 
 	let auth0 = null;
+	let isAuthenticated = null;
+	let user = null;
+	let authenticationCompleted = false;
 
-	onMount(() => {
-		console.log(config.auth0.domain);
+	const login = async () => {
+		authenticationCompleted = false;
+		await auth0.loginWithRedirect({
+			redirect_uri: window.location.origin,
+		});
+	};
+
+	const logout = () => {
+		auth0.logout({
+			returnTo: window.location.origin,
+		});
+	};
+
+	const updateUser = async () => {
+		isAuthenticated = await auth0.isAuthenticated();
+		user = await auth0.getUser();
+		authenticationCompleted = true;
+	};
+
+	const configureClient = async () => {
+		auth0 = await createAuth0Client({
+			domain: config.auth0.domain,
+			client_id: config.auth0.clientId,
+		});
+	};
+
+	onMount(async () => {
+		await configureClient();
+
+		updateUser();
+
+		const isAuthenticated = await auth0.isAuthenticated();
+
+		if (isAuthenticated) {
+			return;
+		}
+
+		const query = window.location.search;
+		if (query.includes("code=") && query.includes("state=")) {
+			await auth0.handleRedirectCallback();
+
+			updateUser();
+
+			window.history.replaceState({}, document.title, "/");
+		}
+		authenticationCompleted = true;
 	});
 </script>
 
 <div>
-	<LeftBar />
-	<Main {tab} {backend_server} />
-	<RightBar bind:selection={tab} />
+	{#if authenticationCompleted}
+		<LeftBar
+			{isAuthenticated}
+			{user}
+			login={() => login()}
+			logout={() => logout()}
+		/>
+		<Main {tab} {backend_server} {user} />
+		<RightBar bind:selection={tab} />
+	{:else}
+		<span>
+			<LoadingIndicator />
+		</span>
+	{/if}
 </div>
 
 <style>
@@ -31,5 +90,12 @@
 
 		display: grid;
 		grid-template-columns: 15% auto 15%;
+	}
+
+	span {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 </style>
