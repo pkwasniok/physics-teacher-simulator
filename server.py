@@ -36,8 +36,8 @@ def db_connect():
 daily_questions = []
 
 
-@api.route('/', methods=['GET'])
-def home():
+@api.route('/daily_question', methods=['GET'])
+def daily_question():
     # Load questions and config
     questions = json.load(open('./questions.json', encoding='utf-8'))
     config = json.load(open('./config.json', encoding='utf-8'))
@@ -71,12 +71,12 @@ def users():
         response['users'].append({"email": user_data[1], "username": user_data[2], "points": user_data[3]})
 
     print(response)
-    return 'OK'
+    return response
 
 
 @api.route('/answer', methods=['POST'])
 def answers():
-    print(request.json['question'])
+    print(request.json)
     question = request.json['question']
     answer = request.json['answer']
     email = request.json['email']
