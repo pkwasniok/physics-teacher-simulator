@@ -1,59 +1,60 @@
 <script>
     import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
+    import MainReviewAnswersTab from "./Misc/MainReviewAnswersTab.svelte";
 
     export let backend_server;
 
     const fetchAnswers = (async () => {
-        const response = fetch(backend_server + "answers");
-        return (await response).json();
+        let response = fetch(backend_server + "answers");
+        response = (await response).json();
+
+        return response;
     })();
 </script>
 
-<div>
+<div id="container">
     {#await fetchAnswers}
         <LoadingIndicator />
     {:then answers}
-        <span class="container">
+        <div id="answers-container">
             {#each answers.answers as answer}
-                <span class="element">
-                    <h4>Question: {answer.question}</h4>
-                    <p>{answer.answer}</p>
-                </span>
+                <MainReviewAnswersTab {answer} />
             {/each}
-        </span>
+        </div>
     {/await}
 </div>
 
 <style>
-    div {
-        max-height: 900px;
+    #container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
 
-        padding: 10px;
+        height: 100%;
+        width: 70vw;
 
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
+    }
+
+    #answers-container {
+        padding-right: 10px;
 
         overflow-y: scroll;
     }
 
-    .element {
-        border: 3px solid white;
+    ::-webkit-scrollbar {
+        width: 10px;
 
-        padding: 5px;
-        margin-top: 20px;
+        background: transparent;
     }
 
-    h4 {
-        padding: 0;
-        margin: 0;
-    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #5d6f8177;
 
-    p {
-        padding: 0;
-        margin: 0;
-
-        overflow: visible;
+        border-radius: 10px;
     }
 </style>

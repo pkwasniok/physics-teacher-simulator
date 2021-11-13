@@ -73,8 +73,8 @@ def answer():
     mydb = db_connect()
     cursor = mydb.cursor()
 
-    sql = 'INSERT INTO answers (question, answer, email) VALUES (%s, %s, %s)'
-    val = (question, answer, email)
+    sql = 'INSERT INTO answers (question, answer, email, time) VALUES (%s, %s, %s, %s)'
+    val = (question, answer, email, str(_datetime.datetime.now().isoformat()))
     cursor.execute(sql, val)
 
     mydb.commit()
@@ -98,12 +98,10 @@ def answers():
     for user in users:
         usernames[user[1]] = user[2]
 
-    print(usernames)
-
     # Create response
     response = {"answers": []}
     for answer in answers:
-        response['answers'].append({"question": answer[1], "answer": answer[2], "username": usernames[answer[3]]})
+        response['answers'].append({"id": answer[0], "question": answer[1], "answer": answer[2], "username": usernames[answer[4]], "time": answer[3]})
 
     return response
 

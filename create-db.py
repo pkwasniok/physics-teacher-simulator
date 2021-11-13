@@ -25,5 +25,5 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 # Create tables in db
-cursor.execute('CREATE TABLE answers (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, question VARCHAR(300) NOT NULL, answer LONGTEXT NOT NULL, email VARCHAR(60) NOT NULL)')
+cursor.execute('CREATE TABLE answers (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, question VARCHAR(300) NOT NULL, answer LONGTEXT NOT NULL, time DATETIME NOT NULL, email VARCHAR(60) NOT NULL)')
 cursor.execute('CREATE TABLE users (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, email VARCHAR(60) NOT NULL, username VARCHAR(60) NOT NULL, points INT(12) NOT NULL)')
