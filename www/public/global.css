@@ -13,6 +13,8 @@ body {
 	background-image: url('./background.svg');
 
 	user-select: none;
+
+	overflow: hidden;
 }
 
 a {

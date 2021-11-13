@@ -13,71 +13,47 @@
     {#await fetchAnswers}
         <LoadingIndicator />
     {:then answers}
-        <table>
-            <tr>
-                <td>Username</td>
-                <td>Question</td>
-            </tr>
+        <span class="container">
             {#each answers.answers as answer}
-                <tr>
-                    <td colspan="2">
-                        <table>
-                            <tr>
-                                <td>{answer.username}</td>
-                                <td>{answer.question}</td>
-                                <td><button>More</button></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
+                <span class="element">
+                    <h4>Question: {answer.question}</h4>
+                    <p>{answer.answer}</p>
+                </span>
             {/each}
-        </table>
+        </span>
     {/await}
 </div>
 
 <style>
     div {
-        height: 100%;
-        width: 100%;
+        max-height: 900px;
+
+        padding: 10px;
 
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+
+        overflow-y: scroll;
     }
 
-    button {
-        background: transparent;
+    .element {
+        border: 3px solid white;
 
+        padding: 5px;
+        margin-top: 20px;
+    }
+
+    h4 {
         padding: 0;
         margin: 0;
-        padding-left: 5px;
-        margin-right: 5px;
-        padding-right: 5px;
-
-        color: white;
-
-        border: none;
-        border-radius: 0 5px 5px 0;
-        border-left: 0px solid white;
-
-        transition: all 0.1s linear;
-
-        cursor: pointer;
     }
 
-    button:hover {
-        border-width: 5px;
-        margin-right: 0;
-    }
+    p {
+        padding: 0;
+        margin: 0;
 
-    button:active {
-        background-color: rgba(255, 255, 255, 0.3);
-    }
-
-    table,
-    tr,
-    td {
-        border: 2px solid white;
-        border-collapse: collapse;
+        overflow: visible;
     }
 </style>

@@ -9,7 +9,7 @@
 	import createAuth0Client from "@auth0/auth0-spa-js";
 	import LoadingIndicator from "./Components/Misc/LoadingIndicator.svelte";
 
-	let tab = 1;
+	let tab = 4;
 	let backend_server = config.backend.ip;
 
 	let auth0 = null;
@@ -31,9 +31,15 @@
 	};
 
 	const updateUser = async () => {
+		// Update user and authentication status
 		isAuthenticated = await auth0.isAuthenticated();
 		user = await auth0.getUser();
 		authenticationCompleted = true;
+
+		// Turn of welcome screen if user is logged in
+		if (isAuthenticated) {
+			tab = 1;
+		}
 	};
 
 	const configureClient = async () => {
@@ -74,8 +80,8 @@
 			login={() => login()}
 			logout={() => logout()}
 		/>
-		<Main {tab} {backend_server} {user} />
-		<RightBar bind:selection={tab} />
+		<Main {tab} {backend_server} {user} login={() => login()} />
+		<RightBar bind:selection={tab} hidden={!isAuthenticated} />
 	{:else}
 		<span>
 			<LoadingIndicator />
@@ -86,7 +92,6 @@
 <style>
 	div {
 		width: 100%;
-		height: 100%;
 
 		display: grid;
 		grid-template-columns: 15% auto 15%;

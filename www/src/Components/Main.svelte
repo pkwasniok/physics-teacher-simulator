@@ -3,10 +3,13 @@
     import MainRanking from "./MainRanking.svelte";
     import MainReviewAnswers from "./MainReviewAnswers.svelte";
     import MainAddNewQuestion from "./MainAddNewQuestion.svelte";
+    import MainWelcomeScreen from "../../Components/MainWelcomeScreen.svelte";
 
     export let tab = 0;
     export let backend_server;
     export let user;
+
+    export let login;
 </script>
 
 <div>
@@ -18,6 +21,8 @@
         <MainRanking {backend_server} />
     {:else if tab == 3}
         <MainAddNewQuestion />
+    {:else if tab == 4}
+        <MainWelcomeScreen {login} />
     {/if}
 </div>
 

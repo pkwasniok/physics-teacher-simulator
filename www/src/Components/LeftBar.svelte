@@ -17,7 +17,6 @@
             <Button>Settings</Button>
             <Button>You answers</Button>
         {/if}
-        <Button hidden={isAuthenticated} on:click={login}>Login</Button>
         <Button hidden={!isAuthenticated} on:click={logout}>Logout</Button>
     </span>
 
