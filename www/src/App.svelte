@@ -16,6 +16,7 @@
 	let isAuthenticated = null;
 	let user = null;
 	let authenticationCompleted = false;
+	let superuser = false;
 
 	const login = async () => {
 		authenticationCompleted = false;
@@ -39,6 +40,7 @@
 		// Turn of welcome screen if user is logged in
 		if (isAuthenticated) {
 			tab = 1;
+			superuser = await fetchSuperUser(user.email);
 		}
 	};
 
@@ -70,6 +72,13 @@
 		}
 		authenticationCompleted = true;
 	});
+
+	const fetchSuperUser = async (email) => {
+		const response = fetch(backend_server + "user/auth?email=" + email);
+
+		let re = await (await response).json();
+		return re.user.superuser;
+	};
 </script>
 
 <div>
@@ -77,6 +86,7 @@
 		<LeftBar
 			{isAuthenticated}
 			{user}
+			{superuser}
 			login={() => login()}
 			logout={() => logout()}
 		/>

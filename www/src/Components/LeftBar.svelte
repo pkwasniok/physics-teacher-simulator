@@ -3,8 +3,8 @@
 
     export let isAuthenticated;
     export let user;
+    export let superuser;
 
-    export let login;
     export let logout;
 </script>
 
@@ -14,8 +14,11 @@
     <span>
         {#if isAuthenticated}
             <img src={user.picture} alt="" />
-            <Button>Settings</Button>
             <Button>You answers</Button>
+            <Button>Settings</Button>
+            {#if superuser}
+                <Button>Superuser</Button>
+            {/if}
         {/if}
         <Button hidden={!isAuthenticated} on:click={logout}>Logout</Button>
     </span>

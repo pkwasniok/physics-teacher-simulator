@@ -19,7 +19,7 @@
             email: email,
         };
 
-        fetch(backend_server + "answer", {
+        fetch(backend_server + "answer/post", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
@@ -68,7 +68,7 @@
 
         outline: none;
         border-radius: 10px;
-        border: 3px solid #afafaf;
+        border: 3px solid white;
     }
 
     textarea::placeholder {

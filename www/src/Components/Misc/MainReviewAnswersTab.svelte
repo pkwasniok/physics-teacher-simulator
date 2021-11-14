@@ -1,42 +1,58 @@
 <script>
+    import Popup from "./Popup.svelte";
+
     export let answer;
+    export let backend_server;
+    export let refreshData;
     let expand = false;
+    let stars = [false, false, false, false, false];
+    const path_star_empty = "./img/star_empty.png";
+    const path_star_filled = "./img/star_filled.png";
+    let popup = false;
 
     const formatDateTime = (datetime) => {
-        let _datetime = new Date(datetime);
+        let _datetime = new Date(Date.parse(datetime));
 
         return (
-            _datetime.getDay() +
+            _datetime.getDate() +
             "-" +
-            _datetime.getMonth() +
+            (_datetime.getMonth() + 1) +
             "-" +
             _datetime.getFullYear() +
             " " +
-            _datetime.getHours() +
+            (_datetime.getHours() - 1) +
             ":" +
             _datetime.getMinutes()
         );
     };
 
-    let stars = [false, false, false, false, false];
-    let final = null;
-
-    $: console.log(checkStar(0, stars, final));
-
-    const checkStar = (star_index, stars, final) => {
-        return final != null ? final[star_index] : stars[star_index];
+    const handleStarClick = (index) => {
+        stars = stars.fill(false);
+        stars = stars.fill(true, 0, index + 1);
     };
 
-    const path_star_empty = "./img/star_empty.png";
-    const path_star_filled = "./img/star_filled.png";
+    const handleReviewSubmit = async () => {
+        popup = false;
+
+        const body = {
+            answer_id: answer.id,
+            email: answer.email,
+            points: stars.filter(Boolean).length,
+            comment: "",
+        };
+
+        let response = await fetch(backend_server + "answer/review/post", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+        });
+
+        refreshData();
+    };
 </script>
 
-<div
-    class="answer"
-    on:mouseenter={() => (expand = true)}
-    on:mouseleave={() => (expand = false)}
->
-    <span class="answer-header">
+<div class="answer">
+    <span class="answer-header" on:mousedown={() => (expand = !expand)}>
         <h4>Question: {answer.question}</h4>
         <h4>{formatDateTime(answer.time)}</h4>
     </span>
@@ -44,48 +60,44 @@
     <span class="answer-rating">
         <span class="answer-rating-stars">
             <img
-                on:mousedown={() => {
-                    stars = stars.fill(false);
-                    stars = stars.fill(true, 0, 1);
-                }}
+                on:mousedown={() => handleStarClick(0)}
                 src={stars[0] ? path_star_filled : path_star_empty}
                 alt=""
             />
             <img
-                on:mousedown={() => {
-                    stars = stars.fill(false);
-                    stars = stars.fill(true, 0, 2);
-                }}
+                on:mousedown={() => handleStarClick(1)}
                 src={stars[1] ? path_star_filled : path_star_empty}
                 alt=""
             />
             <img
-                on:mousedown={() => {
-                    stars = stars.fill(false);
-                    stars = stars.fill(true, 0, 3);
-                }}
+                on:mousedown={() => handleStarClick(2)}
                 src={stars[2] ? path_star_filled : path_star_empty}
                 alt=""
             />
             <img
-                on:mousedown={() => {
-                    stars = stars.fill(false);
-                    stars = stars.fill(true, 0, 4);
-                }}
+                on:mousedown={() => handleStarClick(3)}
                 src={stars[3] ? path_star_filled : path_star_empty}
                 alt=""
             />
             <img
-                on:mousedown={() => {
-                    stars = stars.fill(false);
-                    stars = stars.fill(true, 0, 5);
-                }}
+                on:mousedown={() => handleStarClick(4)}
                 src={stars[4] ? path_star_filled : path_star_empty}
                 alt=""
             />
         </span>
-        <button>Submit review</button>
+        {#if !answer.reviewed}
+            <button on:click={() => (popup = true)}>Submit review</button>
+        {:else}
+            <h4>Reviewed</h4>
+        {/if}
     </span>
+    {#if popup}
+        <Popup
+            content={"Are you sure you want to submit your review?"}
+            submit={() => handleReviewSubmit()}
+            cancel={() => (popup = false)}
+        />
+    {/if}
 </div>
 
 <style>
@@ -94,6 +106,8 @@
 
         border: 3px solid white;
         border-radius: 5px;
+
+        background-color: rgba(0, 0, 0, 0.3);
 
         margin-bottom: 15px;
         margin-top: 15px;
@@ -104,12 +118,13 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+
+        cursor: pointer;
     }
 
     .hidden {
-        max-height: 1000px;
+        max-height: 500px;
         transition: max-height 0.3s linear;
-        margin-top: 15px;
     }
 
     .answer-rating {
@@ -146,6 +161,8 @@
         font-size: 17px;
 
         cursor: pointer;
+
+        transition: all 0.1s linear;
     }
 
     button:hover {
@@ -155,9 +172,11 @@
     img {
         width: 20px;
         aspect-ratio: 1;
-        padding-left: 10px;
+        margin-left: 10px;
 
         cursor: pointer;
+
+        user-select: none;
     }
 
     h4 {
@@ -168,10 +187,11 @@
     p {
         margin: 0;
         padding: 0;
+        margin-top: 15px;
 
         overflow: hidden;
         max-height: 0;
 
-        transition: all 0.4s ease-out;
+        transition: all 0.7s linear;
     }
 </style>

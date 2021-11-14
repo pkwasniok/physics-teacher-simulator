@@ -3,11 +3,13 @@
     import MainReviewAnswersTab from "./Misc/MainReviewAnswersTab.svelte";
 
     export let backend_server;
+    export let user;
 
     const fetchAnswers = (async () => {
-        let response = fetch(backend_server + "answers");
+        let response = fetch(backend_server + "answer/get?email=" + user.email);
         response = (await response).json();
 
+        console.log(await response);
         return response;
     })();
 </script>
@@ -18,7 +20,7 @@
     {:then answers}
         <div id="answers-container">
             {#each answers.answers as answer}
-                <MainReviewAnswersTab {answer} />
+                <MainReviewAnswersTab {answer} {backend_server} />
             {/each}
         </div>
     {/await}

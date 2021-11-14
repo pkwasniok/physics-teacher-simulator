@@ -45,7 +45,7 @@
         display: flex;
         flex-direction: column;
         align-items: right;
-        justify-content: space-around;
+        justify-content: space-evenly;
 
         text-align: right;
 

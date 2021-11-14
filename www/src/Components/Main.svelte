@@ -16,7 +16,7 @@
     {#if tab == 0}
         <MainDailyQuestion {backend_server} {user} />
     {:else if tab == 1}
-        <MainReviewAnswers {backend_server} />
+        <MainReviewAnswers {backend_server} {user} />
     {:else if tab == 2}
         <MainRanking {backend_server} />
     {:else if tab == 3}

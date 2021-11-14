@@ -9,6 +9,8 @@
     })();
 </script>
 
+// TODO: Fetch data from new endpoint
+
 <div>
     {#await fetchUsers}
         <LoadingIndicator />
