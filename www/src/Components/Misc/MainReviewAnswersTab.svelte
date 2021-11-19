@@ -3,12 +3,18 @@
 
     export let answer;
     export let backend_server;
-    export let refreshData;
+    export let onSubmit;
     let expand = false;
     let stars = [false, false, false, false, false];
     const path_star_empty = "./img/star_empty.png";
     const path_star_filled = "./img/star_filled.png";
     let popup = false;
+    let comment = "";
+
+    //Set rate bare to user points when answer is reviewed
+    if (answer.reviewed) {
+        stars = stars.fill(true, 0, answer.points);
+    }
 
     const formatDateTime = (datetime) => {
         let _datetime = new Date(Date.parse(datetime));
@@ -27,8 +33,10 @@
     };
 
     const handleStarClick = (index) => {
-        stars = stars.fill(false);
-        stars = stars.fill(true, 0, index + 1);
+        if (!answer.reviewed) {
+            stars = stars.fill(false);
+            stars = stars.fill(true, 0, index + 1);
+        }
     };
 
     const handleReviewSubmit = async () => {
@@ -38,7 +46,7 @@
             answer_id: answer.id,
             email: answer.email,
             points: stars.filter(Boolean).length,
-            comment: "",
+            comment: comment,
         };
 
         let response = await fetch(backend_server + "answer/review/post", {
@@ -47,7 +55,7 @@
             body: JSON.stringify(body),
         });
 
-        refreshData();
+        onSubmit();
     };
 </script>
 
@@ -63,30 +71,37 @@
                 on:mousedown={() => handleStarClick(0)}
                 src={stars[0] ? path_star_filled : path_star_empty}
                 alt=""
+                class={answer.reviewed ? "disabled" : ""}
             />
             <img
                 on:mousedown={() => handleStarClick(1)}
                 src={stars[1] ? path_star_filled : path_star_empty}
                 alt=""
+                class={answer.reviewed ? "disabled" : ""}
             />
             <img
                 on:mousedown={() => handleStarClick(2)}
                 src={stars[2] ? path_star_filled : path_star_empty}
                 alt=""
+                class={answer.reviewed ? "disabled" : ""}
             />
             <img
                 on:mousedown={() => handleStarClick(3)}
                 src={stars[3] ? path_star_filled : path_star_empty}
                 alt=""
+                class={answer.reviewed ? "disabled" : ""}
             />
             <img
                 on:mousedown={() => handleStarClick(4)}
                 src={stars[4] ? path_star_filled : path_star_empty}
                 alt=""
+                class={answer.reviewed ? "disabled" : ""}
             />
         </span>
         {#if !answer.reviewed}
-            <button on:click={() => (popup = true)}>Submit review</button>
+            <button on:click={() => (popup = true)} disabled={!stars[0]}>
+                Submit review
+            </button>
         {:else}
             <h4>Reviewed</h4>
         {/if}
@@ -96,6 +111,7 @@
             content={"Are you sure you want to submit your review?"}
             submit={() => handleReviewSubmit()}
             cancel={() => (popup = false)}
+            bind:comment
         />
     {/if}
 </div>
@@ -165,6 +181,16 @@
         transition: all 0.1s linear;
     }
 
+    button:disabled {
+        color: gray;
+
+        cursor: default;
+    }
+
+    button:disabled:hover {
+        background: transparent;
+    }
+
     button:hover {
         background: rgba(255, 255, 255, 0.3);
     }
@@ -177,6 +203,10 @@
         cursor: pointer;
 
         user-select: none;
+    }
+
+    .disabled {
+        cursor: default;
     }
 
     h4 {

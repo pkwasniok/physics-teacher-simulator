@@ -1,4 +1,5 @@
 # TODO Endpoint: Calculate users points
+# TODO answer/get: Return answers only from other users
 
 import json
 import random
@@ -74,7 +75,6 @@ def users():
     for user_data in mysql_data:
         response['users'].append({"email": user_data[1], "username": user_data[2], "points": user_data[3]})
 
-    print(response)
     return response
 
 
@@ -85,25 +85,25 @@ def user_ranking():
     cursor = mydb.cursor()
 
     # Fetch data from db
-    cursor.execute('SELECT * FROM users')
-    users = cursor.fetchall()
-    cursor.execute('SELECT * FROM answers')
-    answers = cursor.fetchall()
+    cursor.execute('SELECT users.username, reviews.points FROM users INNER JOIN answers ON users.email=answers.email INNER JOIN reviews ON answers.id=reviews.answer_id')
+    user_points = cursor.fetchall()
 
-    usernames = {}
+    # Calculate every user points and get list of all users
     points = {}
-    for user in users:
-        usernames[user[1]] = user[2]
-        points[usernames[user[1]]] = 0
+    usernames = []
+    for user in user_points:
+        if not user[0] in points:
+            points[user[0]] = 0
+            usernames.append(user[0])
+        points[user[0]] += user[1]
 
-    print(points)
+    # Create response
+    final_user_points = []
+    for username in usernames:
+        final_user_points.append({"username": username, "points": points[username]})
+    response = {"status": "OK", "response": final_user_points}
 
-    for answer in answers:
-        points = 0
-        for review in json.loads(answer[4])['reviews']:
-            print(review)
-
-    return 'OK'
+    return response
 
 
 @ api.route('/answer/post', methods=['POST'])   # Add new answer to question (f.ex. after daily question)
@@ -129,18 +129,23 @@ def answers():
     # Fetch data from database
     cursor.execute('SELECT * FROM answers')
     answers = cursor.fetchall()
-    cursor.execute('SELECT * from reviews WHERE reviews.email="' + request.args.get('email') + '"')
+    cursor.execute('SELECT answer_id, points from reviews WHERE reviews.email="' + request.args.get('email') + '"')
     reviews = cursor.fetchall()
+
+    # Make dict with
+    points = {}
+    for review in reviews:
+        points[review[0]] = review[1]
 
     # Create response
     response = {"status": "OK", "answers": []}
     for answer in answers:
         reviewed = False
         for review in reviews:
-            if answer[0] == review[1]:
+            if answer[0] == review[0]:
                 reviewed = True
 
-        response['answers'].append({"id": answer[0], "email": answer[1], "question": answer[2], "answer": answer[3], "time": answer[4], "reviewed": reviewed})
+        response['answers'].append({"id": answer[0], "email": answer[1], "question": answer[2], "answer": answer[3], "time": answer[4], "reviewed": reviewed, "points": (points[answer[0]] if reviewed else "null")})
 
     return response
 
@@ -156,7 +161,6 @@ def answer_review_post():
         if i not in request.json.keys():
             return {"status": "Invaild arguments"}
 
-    print(request.json)
     # Check if answer with specific id exists
     cursor.execute('SELECT id FROM answers WHERE id=' + str(request.json['answer_id']))
     answer = cursor.fetchall()

@@ -4,12 +4,10 @@
     export let backend_server;
 
     const fetchUsers = (async () => {
-        const response = fetch(backend_server + "users");
+        const response = fetch(backend_server + "user/ranking");
         return (await response).json();
     })();
 </script>
-
-// TODO: Fetch data from new endpoint
 
 <div>
     {#await fetchUsers}
@@ -20,7 +18,7 @@
                 <th>Username</th>
                 <th>Points</th>
             </tr>
-            {#each users.users as user}
+            {#each users.response as user}
                 <tr>
                     <th>{user.username}</th>
                     <th>{user.points}⭐</th>

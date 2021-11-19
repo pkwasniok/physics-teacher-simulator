@@ -1,29 +1,44 @@
 <script>
+    import { onMount } from "svelte";
+
     import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
     import MainReviewAnswersTab from "./Misc/MainReviewAnswersTab.svelte";
 
     export let backend_server;
     export let user;
 
-    const fetchAnswers = (async () => {
+    let answers = null;
+
+    const fetchAnswers = async () => {
         let response = fetch(backend_server + "answer/get?email=" + user.email);
         response = (await response).json();
-
-        console.log(await response);
         return response;
-    })();
+    };
+
+    const refetchData = async () => {
+        answers = null;
+        answers = await fetchAnswers();
+    };
+
+    onMount(async () => {
+        answers = await fetchAnswers();
+    });
 </script>
 
 <div id="container">
-    {#await fetchAnswers}
+    {#if answers == null}}
         <LoadingIndicator />
-    {:then answers}
+    {:else}
         <div id="answers-container">
             {#each answers.answers as answer}
-                <MainReviewAnswersTab {answer} {backend_server} />
+                <MainReviewAnswersTab
+                    {answer}
+                    {backend_server}
+                    onSubmit={() => refetchData()}
+                />
             {/each}
         </div>
-    {/await}
+    {/if}
 </div>
 
 <style>
