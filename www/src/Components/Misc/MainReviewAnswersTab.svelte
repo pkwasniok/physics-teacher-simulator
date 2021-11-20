@@ -1,8 +1,9 @@
 <script>
-    import Popup from "./Popup.svelte";
+    import api from "../../api";
+
+    import PopupReview from "./PopupReview.svelte";
 
     export let answer;
-    export let backend_server;
     export let onSubmit;
     let expand = false;
     let stars = [false, false, false, false, false];
@@ -49,11 +50,7 @@
             comment: comment,
         };
 
-        let response = await fetch(backend_server + "answer/review/post", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
-        });
+        await api.post("answer/review/post", body);
 
         onSubmit();
     };
@@ -61,7 +58,10 @@
 
 <div class="answer">
     <span class="answer-header" on:mousedown={() => (expand = !expand)}>
-        <h4>Question: {answer.question}</h4>
+        <h4 class={answer.reviewed ? "" : "answer-unreviewed"}>
+            Question: {answer.question}
+        </h4>
+
         <h4>{formatDateTime(answer.time)}</h4>
     </span>
     <p class:hidden={expand}>{answer.answer}</p>
@@ -107,7 +107,7 @@
         {/if}
     </span>
     {#if popup}
-        <Popup
+        <PopupReview
             content={"Are you sure you want to submit your review?"}
             submit={() => handleReviewSubmit()}
             cancel={() => (popup = false)}
@@ -136,6 +136,11 @@
         justify-content: space-between;
 
         cursor: pointer;
+    }
+
+    .answer-unreviewed {
+        border-left: 5px solid white;
+        padding-left: 5px;
     }
 
     .hidden {

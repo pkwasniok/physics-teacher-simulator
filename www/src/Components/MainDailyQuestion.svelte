@@ -1,49 +1,77 @@
 <script>
+    import { onMount } from "svelte";
+
+    import api from "../api";
+    import { _user } from "../user";
     import Button from "./Misc/Button.svelte";
     import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
+    import PopupDailyQuestion from "./Misc/PopupDailyQuestion.svelte";
 
-    export let backend_server;
-    export let user;
-
+    let daily_question = null;
     let answer;
+    let popup = false;
 
-    const fetchDailyQuestion = (async () => {
-        const response = fetch(backend_server + "daily_question");
-        return (await response).json();
-    })();
+    let user = null;
+    _user.subscribable.subscribe((value) => {
+        user = value;
+    });
 
-    const postAnswer = (answer, question, email) => {
-        let data = {
-            question: question,
+    onMount(async () => {
+        daily_question = await api.get("daily_question");
+        _user.reAuthorize();
+    });
+
+    const handlePopupSubmit = async () => {
+        popup = false;
+        await api.post("answer/post", {
+            email: user.email,
+            question: daily_question.question,
             answer: answer,
-            email: email,
-        };
-
-        fetch(backend_server + "answer/post", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
         });
+        _user.reAuthorize();
     };
+
+    let timestamp = null;
+    let seconds = 0,
+        minutes = 0,
+        hours = 0;
+    const interval = setInterval(() => {
+        timestamp = new Date(
+            Date.parse("2021-11-21T08:00:00.000Z") - new Date().getTime()
+        );
+        seconds = timestamp.getSeconds();
+        minutes = timestamp.getMinutes();
+        hours = timestamp.getHours() - 2;
+    }, 1000);
 </script>
 
 <div>
-    {#await fetchDailyQuestion}
-        <LoadingIndicator />
-    {:then daily_question}
-        <h2>{daily_question.question}</h2>
-        <h3>{daily_question.branch}</h3>
-        <textarea
-            bind:value={answer}
-            resizeable="none"
-            placeholder="Type your answer here..."
-        />
-        <Button
-            on:click={() =>
-                postAnswer(answer, daily_question.question, user.email)}
-            >Submit</Button
-        >
-    {/await}
+    {#if !user.daily_question_answered}
+        {#if daily_question != null}
+            <h2>{daily_question.question}</h2>
+            <h3>{daily_question.branch}</h3>
+            <textarea
+                bind:value={answer}
+                resizeable="none"
+                placeholder="Type your answer here..."
+            />
+            <Button on:click={() => (popup = true)}>Submit</Button>
+            {#if popup}
+                <PopupDailyQuestion
+                    cancel={() => (popup = false)}
+                    submit={async () => await handlePopupSubmit()}
+                />
+            {/if}
+        {:else}
+            <LoadingIndicator />
+        {/if}
+    {:else}
+        <h1>Your answer has been submitted!</h1>
+        <h2>
+            Next daily question will be available in {hours} h {minutes} m {seconds}
+            s
+        </h2>
+    {/if}
 </div>
 
 <style>

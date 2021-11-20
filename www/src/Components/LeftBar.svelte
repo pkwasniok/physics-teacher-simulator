@@ -1,26 +1,28 @@
 <script>
+    import { _user } from "../user";
     import Button from "./Misc/Button.svelte";
 
-    export let isAuthenticated;
-    export let user;
-    export let superuser;
-
     export let logout;
+
+    let user = null;
+    _user.subscribable.subscribe((value) => {
+        user = value;
+    });
 </script>
 
 <div>
     <h1>Physics⚛️ <br /> teacher <br /> simulator</h1>
 
     <span>
-        {#if isAuthenticated}
+        {#if user != null}
             <img src={user.picture} alt="" />
             <Button>You answers</Button>
             <Button>Settings</Button>
-            {#if superuser}
+            {#if user.superuser}
                 <Button>Superuser</Button>
             {/if}
+            <Button on:click={logout}>Logout</Button>
         {/if}
-        <Button hidden={!isAuthenticated} on:click={logout}>Logout</Button>
     </span>
 
     <h3>

@@ -1,3 +1,6 @@
+Backedn:
+  - add data validation to every API endpoint
+
 Settings:
  - changing username (MEDIUM)
 
@@ -17,7 +20,14 @@ Physics royale:
 Your answers:
  - add your answers screen (HIGH)
 
+Review answers:
+ - add new answer indicator (HIGH)
+ - when popup is active, make averything else disabled (MEDIUM)
+
 Other:
  - change welcome screen (LOW)
  - add info about how this app works (LOW)
+ - make popups slide-in and slide-out (LOW)
  - code clean-up (MEDIUM)
+ - add character limit to all textareas
+ - redo fetching data from backend

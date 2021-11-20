@@ -1,97 +1,63 @@
 <script>
-	import { onMount } from "svelte";
+	import auth0 from "./auth0";
+	import { _user } from "./user";
 
+	import { onMount } from "svelte";
 	import LeftBar from "./Components/LeftBar.svelte";
 	import Main from "./Components/Main.svelte";
 	import RightBar from "./Components/RightBar.svelte";
-	import config from "./config";
 
-	import createAuth0Client from "@auth0/auth0-spa-js";
 	import LoadingIndicator from "./Components/Misc/LoadingIndicator.svelte";
+	import Button from "./Components/Misc/Button.svelte";
 
 	let tab = 4;
-	let backend_server = config.backend.ip;
 
-	let auth0 = null;
-	let isAuthenticated = null;
+	// Subscribe to user data
 	let user = null;
-	let authenticationCompleted = false;
-	let superuser = false;
-
-	const login = async () => {
-		authenticationCompleted = false;
-		await auth0.loginWithRedirect({
-			redirect_uri: window.location.origin,
-		});
-	};
-
-	const logout = () => {
-		auth0.logout({
-			returnTo: window.location.origin,
-		});
-	};
-
-	const updateUser = async () => {
-		// Update user and authentication status
-		isAuthenticated = await auth0.isAuthenticated();
-		user = await auth0.getUser();
-		authenticationCompleted = true;
-
-		// Turn of welcome screen if user is logged in
-		if (isAuthenticated) {
-			tab = 1;
-			superuser = await fetchSuperUser(user.email);
-		}
-	};
-
-	const configureClient = async () => {
-		auth0 = await createAuth0Client({
-			domain: config.auth0.domain,
-			client_id: config.auth0.clientId,
-		});
-	};
-
-	onMount(async () => {
-		await configureClient();
-
-		updateUser();
-
-		const isAuthenticated = await auth0.isAuthenticated();
-
-		if (isAuthenticated) {
-			return;
-		}
-
-		const query = window.location.search;
-		if (query.includes("code=") && query.includes("state=")) {
-			await auth0.handleRedirectCallback();
-
-			updateUser();
-
-			window.history.replaceState({}, document.title, "/");
-		}
-		authenticationCompleted = true;
+	_user.subscribable.subscribe((value) => {
+		user = value;
 	});
 
-	const fetchSuperUser = async (email) => {
-		const response = fetch(backend_server + "user/auth?email=" + email);
+	// Fetch user data
+	let auth0_client = null;
+	onMount(async () => {
+		auth0_client = await auth0.createClient();
 
-		let re = await (await response).json();
-		return re.user.superuser;
+		const isAuthenticated = await auth0_client.isAuthenticated();
+		if (isAuthenticated) {
+			tab = 0;
+			_user.authorize(await auth0_client.getUser());
+		}
+	});
+
+	const handleAfterLogin = async () => {
+		auth0_client = await auth0.createClient();
+		const isAuthenticated = await uth0_client.isAuthenticated();
+		if (isAuthenticated) {
+			tab = 0;
+			_user.authorize(await auth0_client.getUser());
+		}
 	};
 </script>
 
 <div>
-	{#if authenticationCompleted}
+	{#if user != null || tab == 4}
 		<LeftBar
-			{isAuthenticated}
-			{user}
-			{superuser}
-			login={() => login()}
-			logout={() => logout()}
+			logout={() => auth0.logout(auth0_client, window.location.origin)}
 		/>
-		<Main {tab} {backend_server} {user} login={() => login()} />
-		<RightBar bind:selection={tab} hidden={!isAuthenticated} />
+		<Main
+			{tab}
+			handleLogin={async () => {
+				await auth0.login(
+					auth0_client,
+					window.location.origin,
+					async (client) => {
+						await handleAfterLogin(client);
+					}
+				);
+			}}
+		/>
+		<RightBar bind:selection={tab} hidden={user == null} />
 	{:else}
 		<span>
 			<LoadingIndicator />
@@ -106,12 +72,5 @@
 
 		display: grid;
 		grid-template-columns: 15% auto 15%;
-	}
-
-	span {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
 	}
 </style>

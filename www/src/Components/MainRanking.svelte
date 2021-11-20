@@ -1,31 +1,32 @@
 <script>
+    import { onMount } from "svelte";
+
+    import api from "../api";
     import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
 
-    export let backend_server;
-
-    const fetchUsers = (async () => {
-        const response = fetch(backend_server + "user/ranking");
-        return (await response).json();
-    })();
+    let ranking = null;
+    onMount(async () => {
+        ranking = await api.get("user/ranking");
+    });
 </script>
 
 <div>
-    {#await fetchUsers}
-        <LoadingIndicator />
-    {:then users}
+    {#if ranking != null}
         <table>
             <tr>
                 <th>Username</th>
                 <th>Points</th>
             </tr>
-            {#each users.response as user}
+            {#each ranking.ranking as user}
                 <tr>
                     <th>{user.username}</th>
                     <th>{user.points}⭐</th>
                 </tr>
             {/each}
         </table>
-    {/await}
+    {:else}
+        <LoadingIndicator />
+    {/if}
 </div>
 
 <style>

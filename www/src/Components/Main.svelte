@@ -6,23 +6,21 @@
     import MainWelcomeScreen from "../../Components/MainWelcomeScreen.svelte";
 
     export let tab = 0;
-    export let backend_server;
-    export let user;
 
-    export let login;
+    export let handleLogin;
 </script>
 
 <div>
     {#if tab == 0}
-        <MainDailyQuestion {backend_server} {user} />
+        <MainDailyQuestion />
     {:else if tab == 1}
-        <MainReviewAnswers {backend_server} {user} />
+        <MainReviewAnswers />
     {:else if tab == 2}
-        <MainRanking {backend_server} />
+        <MainRanking />
     {:else if tab == 3}
-        <MainAddNewQuestion />
+        <!--<MainAddNewQuestion />-->
     {:else if tab == 4}
-        <MainWelcomeScreen {login} />
+        <MainWelcomeScreen login={handleLogin} />
     {/if}
 </div>
 

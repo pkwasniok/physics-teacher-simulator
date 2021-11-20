@@ -42,13 +42,13 @@ def auth_user():
         return {"status": "Invaild arguments"}
 
     # Get users data from db
-    cursor.execute('SELECT * FROM users')
-    data = cursor.fetchall()
+    cursor.execute('SELECT users.email FROM users')
+    users = cursor.fetchall()
 
-    # Extract all emails list
+    # Extract emails
     emails = []
-    for user in data:
-        emails.append(user[1])
+    for user in users:
+        emails.append(user[0])
 
     # Check if user with specific email exists and create one if not
     if request.args.get('email') not in emails:
@@ -58,10 +58,10 @@ def auth_user():
         mydb.commit()
 
     # Get all user data from db
-    cursor.execute('SELECT * FROM users WHERE users.email=\"' + request.args.get('email')+'\"')
+    cursor.execute('SELECT users.email, users.username, users.superuser, users.daily_question_answered FROM users WHERE users.email=\"' + request.args.get('email')+'\"')
     user = cursor.fetchall()[0]
 
-    return {"status": "OK", "user": {"email": user[1], "username": user[2], "superuser": (True if user[3] == 1 else False)}}
+    return {"status": "OK", "user": {"email": user[0], "username": user[1], "superuser": (True if user[2] == 1 else False), "daily_question_answered": (True if user[3] == 1 else False)}}
 
 
 @ api.route('/users', methods=['GET'])          # Return list of all users (UNUSED)
@@ -101,21 +101,27 @@ def user_ranking():
     final_user_points = []
     for username in usernames:
         final_user_points.append({"username": username, "points": points[username]})
-    response = {"status": "OK", "response": final_user_points}
+    response = {"status": "OK", "ranking": final_user_points}
 
     return response
 
 
 @ api.route('/answer/post', methods=['POST'])   # Add new answer to question (f.ex. after daily question)
-def answer():
+def answer_post():
     # Connect to db
     mydb = db_connect()
     cursor = mydb.cursor()
 
     # Insert new answer to db
-    sql = 'INSERT INTO answers (email, question, answer, reviews) VALUES (%s, %s, %s, %s)'
-    val = (request.json['email'], request.json["question"], request.json['answer'], json.dumps({"reviews": []}))
+    sql = 'INSERT INTO answers (email, question, answer) VALUES (%s, %s, %s)'
+    val = (request.json['email'], request.json["question"], request.json['answer'])
     cursor.execute(sql, val)
+
+    # Change user daily question answered status
+    sql = 'UPDATE users SET users.daily_question_answered=1 WHERE users.email="' + request.json['email'] + '"'
+    cursor.execute(sql)
+
+    # Commit all changes to database
     mydb.commit()
 
     return {"status": "OK"}
@@ -187,11 +193,10 @@ def daily_question():
     if len(daily_questions) < 1:
         daily_questions = list(range(0, len(questions['questions'])))
         random.shuffle(daily_questions)
-        print(daily_questions)
 
     # Create response
     question = questions['questions'][daily_questions[0]]
-    response = {"question": question['question'], 'branch': question['branch']}
+    response = {"status": "OK", "question": question['question'], 'branch': question['branch']}
 
     # Return response
     return response

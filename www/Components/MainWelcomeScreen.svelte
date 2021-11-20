@@ -4,8 +4,6 @@
     export let login;
 </script>
 
-// TODO: Redo whole screen, because actual one sucks
-
 <div>
     <h1>Welcom to physics teacher simulator!</h1>
     <p>
