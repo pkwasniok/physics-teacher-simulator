@@ -7,6 +7,7 @@
     import MainReviewAnswersTab from "./Misc/MainReviewAnswersTab.svelte";
 
     let answers = null;
+    let separated = false;
 
     let user = null;
     _user.subscribable.subscribe((value) => {
@@ -16,6 +17,16 @@
     onMount(async () => {
         _user.reAuthorize();
         answers = await api.get("answer/get?email=" + user.email);
+
+        answers.answers = answers.answers.sort((a, b) => {
+            if (b.reviewed && !a.reviewed) {
+                return -1;
+            } else if (a.reviewed && !b.reviewed) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
     });
 
     const handleTabSubmit = async () => {

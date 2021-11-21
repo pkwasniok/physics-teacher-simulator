@@ -1,7 +1,9 @@
 <script>
     import api from "../../api";
-
+    import GenericButton from "./GenericButton.svelte";
     import PopupReview from "./PopupReview.svelte";
+
+    import { fly } from "svelte/transition";
 
     export let answer;
     export let onSubmit;
@@ -56,7 +58,7 @@
     };
 </script>
 
-<div class="answer">
+<div class="answer" transition:fly={{ y: -200, duration: 800 }}>
     <span class="answer-header" on:mousedown={() => (expand = !expand)}>
         <h4 class={answer.reviewed ? "" : "answer-unreviewed"}>
             Question: {answer.question}
@@ -99,22 +101,26 @@
             />
         </span>
         {#if !answer.reviewed}
-            <button on:click={() => (popup = true)} disabled={!stars[0]}>
+            <GenericButton
+                on:click={() => (popup = true)}
+                disabled={!stars[0]}
+                fontSize={17}
+            >
                 Submit review
-            </button>
+            </GenericButton>
         {:else}
             <h4>Reviewed</h4>
         {/if}
     </span>
-    {#if popup}
-        <PopupReview
-            content={"Are you sure you want to submit your review?"}
-            submit={() => handleReviewSubmit()}
-            cancel={() => (popup = false)}
-            bind:comment
-        />
-    {/if}
 </div>
+{#if popup}
+    <PopupReview
+        content={"Are you sure you want to submit your review?"}
+        submit={() => handleReviewSubmit()}
+        cancel={() => (popup = false)}
+        bind:comment
+    />
+{/if}
 
 <style>
     .answer {
@@ -164,40 +170,6 @@
         flex-direction: row;
         align-items: center;
         width: fit-content;
-    }
-
-    button {
-        margin: 0;
-        padding: 0;
-        padding: 3px;
-        padding-left: 5px;
-        padding-right: 3px;
-
-        background: transparent;
-
-        border: none;
-        border-radius: 3px;
-
-        color: white;
-        font-size: 17px;
-
-        cursor: pointer;
-
-        transition: all 0.1s linear;
-    }
-
-    button:disabled {
-        color: gray;
-
-        cursor: default;
-    }
-
-    button:disabled:hover {
-        background: transparent;
-    }
-
-    button:hover {
-        background: rgba(255, 255, 255, 0.3);
     }
 
     img {

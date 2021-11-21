@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import { fly } from "svelte/transition";
 
     import api from "../api";
     import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
@@ -10,7 +11,7 @@
     });
 </script>
 
-<div>
+<div transition:fly={{ y: -200, duration: 800 }}>
     {#if ranking != null}
         <table>
             <tr>

@@ -28,12 +28,12 @@
             Ranking
         </RightBarButton>
 
-        <RightBarButton
+        <!--<RightBarButton
             on:click={() => (selection = 3)}
             selected={selection == 3}
         >
             Add new <br /> question
-        </RightBarButton>
+        </RightBarButton>-->
     </span>
 </div>
 

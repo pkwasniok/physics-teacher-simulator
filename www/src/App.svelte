@@ -9,8 +9,13 @@
 
 	import LoadingIndicator from "./Components/Misc/LoadingIndicator.svelte";
 	import Button from "./Components/Misc/Button.svelte";
+	import ScreenLogin from "./Components/ScreenLogin.svelte";
 
-	let tab = 4;
+	let tab = 0;
+	let isAuthenticating = true;
+	let isAuthenticated = false;
+
+	let auth0_client = null;
 
 	// Subscribe to user data
 	let user = null;
@@ -18,30 +23,44 @@
 		user = value;
 	});
 
-	// Fetch user data
-	let auth0_client = null;
-	onMount(async () => {
+	const auth0_authenticate = async () => {
+		isAuthenticating = true;
+
 		auth0_client = await auth0.createClient();
 
-		const isAuthenticated = await auth0_client.isAuthenticated();
+		isAuthenticated = await auth0_client.isAuthenticated();
 		if (isAuthenticated) {
 			tab = 0;
 			_user.authorize(await auth0_client.getUser());
+		} else {
+			tab = 4;
 		}
+
+		isAuthenticating = false;
+	};
+
+	// Fetch user data
+	onMount(async () => {
+		await auth0_authenticate();
 	});
 
 	const handleAfterLogin = async () => {
-		auth0_client = await auth0.createClient();
-		const isAuthenticated = await uth0_client.isAuthenticated();
-		if (isAuthenticated) {
-			tab = 0;
-			_user.authorize(await auth0_client.getUser());
-		}
+		await auth0_authenticate();
+	};
+
+	const handleLogin = async () => {
+		await auth0.login(
+			auth0_client,
+			window.location.origin,
+			async (client) => {
+				await handleAfterLogin(client);
+			}
+		);
 	};
 </script>
 
 <div>
-	{#if user != null || tab == 4}
+	{#if user != null && !isAuthenticating}
 		<LeftBar
 			logout={() => auth0.logout(auth0_client, window.location.origin)}
 		/>
@@ -58,10 +77,10 @@
 			}}
 		/>
 		<RightBar bind:selection={tab} hidden={user == null} />
+	{:else if !isAuthenticated && !isAuthenticating}
+		<ScreenLogin login={async () => await handleLogin()} />
 	{:else}
-		<span>
-			<LoadingIndicator />
-		</span>
+		<LoadingIndicator />
 	{/if}
 </div>
 

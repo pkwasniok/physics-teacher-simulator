@@ -1,11 +1,15 @@
 <script>
+    import { fly, fade } from "svelte/transition";
+    import GenericButton from "./GenericButton.svelte";
+
     export let submit;
     export let cancel;
     export let content;
     export let comment;
 </script>
 
-<div>
+<div id="background" transition:fade />
+<div id="popup" transition:fly={{ y: 200, duration: 1500 }}>
     <p>
         {content}
     </p>
@@ -14,20 +18,36 @@
         placeholder="You can leave comment here..."
     />
     <span class="control">
-        <button on:click={cancel}>Cancel</button>
-        <button on:click={submit}>Submit</button>
+        <GenericButton on:click={cancel}>Cancel</GenericButton>
+        <GenericButton on:click={submit}>Submit</GenericButton>
     </span>
 </div>
 
 <style>
-    div {
+    #background {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
 
-        width: 50%;
-        height: 35%;
+        z-index: 2;
+
+        width: 100vw;
+        height: 100vh;
+
+        backdrop-filter: blur(3px);
+
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    #popup {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        width: 50vw;
+        height: 35vh;
 
         border: 3px solid white;
         border-radius: 5px;
@@ -37,32 +57,13 @@
         align-items: center;
         justify-content: space-evenly;
 
+        z-index: 3;
+
         background-color: rgba(14, 42, 71, 1);
 
         -webkit-box-shadow: 3px 3px 10px 0px #000;
         -moz-box-shadow: 3px 3px 10px 0px #000;
         box-shadow: 3px 3px 10px 0px #000;
-    }
-
-    button {
-        border: none;
-        border-radius: 5px;
-
-        background: transparent;
-
-        color: white;
-        font-size: 20px;
-
-        margin: 0;
-        padding: 5px;
-
-        transition: all 0.15s linear;
-
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: rgba(255, 255, 255, 0.9);
     }
 
     p {

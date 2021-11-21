@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import { fly } from "svelte/transition";
 
     import api from "../api";
     import { _user } from "../user";
@@ -31,10 +32,12 @@
         _user.reAuthorize();
     };
 
-    let timestamp = null;
-    let seconds = 0,
-        minutes = 0,
-        hours = 0;
+    let timestamp = new Date(
+        Date.parse("2021-11-21T08:00:00.000Z") - new Date().getTime()
+    );
+    let seconds = timestamp.getSeconds(),
+        minutes = timestamp.getMinutes(),
+        hours = timestamp.getHours() - 2;
     const interval = setInterval(() => {
         timestamp = new Date(
             Date.parse("2021-11-21T08:00:00.000Z") - new Date().getTime()
@@ -45,7 +48,7 @@
     }, 1000);
 </script>
 
-<div>
+<div transition:fly={{ y: -200, duration: 800 }}>
     {#if !user.daily_question_answered}
         {#if daily_question != null}
             <h2>{daily_question.question}</h2>
