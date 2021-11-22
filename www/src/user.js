@@ -35,8 +35,10 @@ const reAuthorize = async () => {
     )
 }
 
-export const _user = {
+const _user = {
     subscribable,
     authorize,
     reAuthorize
 }
+
+export default _user;

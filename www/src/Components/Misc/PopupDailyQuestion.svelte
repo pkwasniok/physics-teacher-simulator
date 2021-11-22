@@ -8,15 +8,15 @@
     const handleClick = () => {};
 </script>
 
-<div id="background" transition:fade />
-<div id="popup" transition:fly={{ y: 200, duration: 1500 }}>
+<div id="background"  />
+<div id="popup" >
     <span id="container-header">
         <h1>Are you sure you want to submit your answer?</h1>
         <h2>Answer can't be changed later</h2>
     </span>
     <span id="container-buttons">
-        <GenericButton on:click={cancel}>Cancel</GenericButton>
-        <GenericButton on:click={submit}>Submit</GenericButton>
+        <GenericButton click={cancel}>Cancel</GenericButton>
+        <GenericButton click={submit}>Submit</GenericButton>
     </span>
 </div>
 

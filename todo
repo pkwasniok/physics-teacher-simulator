@@ -2,10 +2,8 @@ Backedn:
   - add data validation to every API endpoint
 
 Settings:
- - changing username (MEDIUM)
 
 Daily question:
- - add popup after clicking submit button (HIGH)
 
 Superuser:
  - add superuser menu (LOW)
@@ -17,13 +15,10 @@ Physics royale:
  - add new game mode (LOW)
 
 Your answers:
- - add your answers screen (HIGH)
 
 Review answers:
- - when popup is active, make averything else disabled (MEDIUM)
 
 Other:
  - change welcome screen (LOW)
  - add info about how this app works (LOW)
  - make popups slide-in and slide-out (LOW)
- - add character limit to all textareas

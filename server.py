@@ -1,6 +1,3 @@
-# TODO Endpoint: Calculate users points
-# TODO answer/get: Return answers only from other users
-
 import json
 import random
 import time
@@ -64,7 +61,7 @@ def auth_user():
     return {"status": "OK", "user": {"email": user[0], "username": user[1], "superuser": (True if user[2] == 1 else False), "daily_question_answered": (True if user[3] == 1 else False)}}
 
 
-@ api.route('/users', methods=['GET'])          # Return list of all users (UNUSED)
+@api.route('/users', methods=['GET'])              # Return list of all users (UNUSED)
 def users():
     mydb = db_connect()
     cursor = mydb.cursor()
@@ -78,7 +75,7 @@ def users():
     return response
 
 
-@api.route('/user/ranking', methods=['GET'])
+@api.route('/user/ranking', methods=['GET'])        # Returns ranking
 def user_ranking():
     # Connect to db
     mydb = db_connect()
@@ -106,7 +103,55 @@ def user_ranking():
     return response
 
 
-@ api.route('/answer/post', methods=['POST'])   # Add new answer to question (f.ex. after daily question)
+@api.route('/user/answers', methods=['GET'])        # Returns list of all answers
+def user_answers():
+    # Connect to db
+    mydb = db_connect()
+    cursor = mydb.cursor()
+
+    # Fetch data
+    cursor.execute('SELECT answers.id, answers.question, answers.answer, answers.time, reviews.points, reviews.comment FROM answers LEFT JOIN reviews ON answers.id=reviews.answer_id WHERE answers.email="' + request.args['email'] + '"')
+    answers = cursor.fetchall() 
+
+    # Create response
+    response = {"status": "OK", "answers": []}
+    answers_in_response = []
+    for answer in answers:
+        if not answer[0] in answers_in_response:
+            answers_in_response.append(answer[0])
+            answer_dict = {
+                "id": answer[0],
+                "question": answer[1],
+                "answer": answer[2],
+                "time": answer[3],
+                "reviews": [{"points": answer[4], "comment": answer[5]}] 
+            }
+            response['answers'].append(answer_dict)
+        else:
+            response['answers'][answers_in_response.index(answer[0])]['reviews'].append({"points": answer[4], "comment": answer[5]})
+
+    print(response)
+
+    return response
+
+
+@api.route('/user/settings/username', methods=['POST'])
+def user_settings_username():
+    mydb = db_connect()
+    cursor = mydb.cursor()
+
+    # Validate post body
+    if request.json.get('email') == None or request.json.get('username') == None:
+        return {'status': 'Invalid arguments'}
+
+    # Update username in db
+    cursor.execute('UPDATE users SET username=%s WHERE users.email=%s', (request.json.get('username'), request.json.get('email')))
+    mydb.commit()
+
+    return {'status': 'OK'}
+
+
+@api.route('/answer/post', methods=['POST'])       # Add new answer to question (f.ex. after daily question)
 def answer_post():
     # Connect to db
     mydb = db_connect()
@@ -127,13 +172,13 @@ def answer_post():
     return {"status": "OK"}
 
 
-@ api.route('/answer/get', methods=['GET'])        # Return all users answers (for asnwer review feature)
+@api.route('/answer/get', methods=['GET'])        # Return all users answers (for asnwer review feature)
 def answers():
     mydb = db_connect()
     cursor = mydb.cursor()
 
     # Fetch data from database
-    cursor.execute('SELECT * FROM answers')
+    cursor.execute('SELECT * FROM answers WHERE NOT email="' + request.args.get('email') + '"')
     answers = cursor.fetchall()
     cursor.execute('SELECT answer_id, points from reviews WHERE reviews.email="' + request.args.get('email') + '"')
     reviews = cursor.fetchall()
@@ -156,7 +201,7 @@ def answers():
     return response
 
 
-@api.route('/answer/review/post', methods=['POST'])
+@api.route('/answer/review/post', methods=['POST'])# Post answer review
 def answer_review_post():
     # Connect to db
     mydb = db_connect()
@@ -182,20 +227,23 @@ def answer_review_post():
     return {"status": "OK"}
 
 
-@ api.route('/daily_question', methods=['GET'])  # Return todays daily question
+@ api.route('/daily_question', methods=['GET'])     # Return todays daily question
 def daily_question():
     # Load questions and config
     questions = json.load(open('./questions.json', encoding='utf-8'))
     config = json.load(open('./config.json', encoding='utf-8'))
 
     # Check if there are any daily questions left
-    global daily_questions
-    if len(daily_questions) < 1:
-        daily_questions = list(range(0, len(questions['questions'])))
+    if len(config['daily_question']['daily_questions']) < 1:
+        config['daily_question']['daily_questions'] = questions['questions']
         random.shuffle(daily_questions)
 
+    # Update config.json file
+    with open('config.json', 'w') as f:
+        json.dump(config, f)
+
     # Create response
-    question = questions['questions'][daily_questions[0]]
+    question = daily_questions[0]
     response = {"status": "OK", "question": question['question'], 'branch': question['branch']}
 
     # Return response

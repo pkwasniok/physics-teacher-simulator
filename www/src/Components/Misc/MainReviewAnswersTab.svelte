@@ -58,13 +58,13 @@
     };
 </script>
 
-<div class="answer" transition:fly={{ y: -200, duration: 800 }}>
+<div class="answer" >
     <span class="answer-header" on:mousedown={() => (expand = !expand)}>
-        <h4 class={answer.reviewed ? "" : "answer-unreviewed"}>
+        <h2 class={answer.reviewed ? "" : "answer-unreviewed"}>
             Question: {answer.question}
-        </h4>
+        </h2>
 
-        <h4>{formatDateTime(answer.time)}</h4>
+        <h2>{formatDateTime(answer.time)}</h2>
     </span>
     <p class:hidden={expand}>{answer.answer}</p>
     <span class="answer-rating">
@@ -102,14 +102,14 @@
         </span>
         {#if !answer.reviewed}
             <GenericButton
-                on:click={() => (popup = true)}
+                click={() => (popup = true)}
                 disabled={!stars[0]}
                 fontSize={17}
             >
                 Submit review
             </GenericButton>
         {:else}
-            <h4>Reviewed</h4>
+            <h2>Reviewed</h2>
         {/if}
     </span>
 </div>
@@ -150,7 +150,7 @@
     }
 
     .hidden {
-        max-height: 500px;
+        max-height: 250px;
         transition: max-height 0.3s linear;
     }
 
@@ -182,13 +182,12 @@
         user-select: none;
     }
 
-    .disabled {
-        cursor: default;
-    }
 
-    h4 {
+    h2{
         margin: 0;
         padding: 0;
+
+        font-size: 18px;
     }
 
     p {

@@ -1,9 +1,8 @@
 <script>
     import { onMount } from "svelte";
-    import { fly } from "svelte/transition";
 
     import api from "../api";
-    import { _user } from "../user";
+    import _user from "../user";
     import Button from "./Misc/Button.svelte";
     import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
     import PopupDailyQuestion from "./Misc/PopupDailyQuestion.svelte";
@@ -48,7 +47,7 @@
     }, 1000);
 </script>
 
-<div transition:fly={{ y: -200, duration: 800 }}>
+<div >
     {#if !user.daily_question_answered}
         {#if daily_question != null}
             <h2>{daily_question.question}</h2>
@@ -57,6 +56,7 @@
                 bind:value={answer}
                 resizeable="none"
                 placeholder="Type your answer here..."
+                maxlength="1500"
             />
             <Button on:click={() => (popup = true)}>Submit</Button>
             {#if popup}

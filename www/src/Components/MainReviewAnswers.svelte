@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
 
     import api from "../api";
-    import { _user } from "../user";
+    import _user from "../user";
     import LoadingIndicator from "./Misc/LoadingIndicator.svelte";
     import MainReviewAnswersTab from "./Misc/MainReviewAnswersTab.svelte";
 
@@ -39,6 +39,7 @@
     {#if answers == null}
         <LoadingIndicator />
     {:else}
+        {#if answers.answers.length > 0}
         <div id="answers-container">
             {#each answers.answers as answer}
                 <MainReviewAnswersTab
@@ -47,6 +48,9 @@
                 />
             {/each}
         </div>
+        {:else}
+            <h1>Here's empty :(</h1>
+        {/if}
     {/if}
 </div>
 
@@ -64,6 +68,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
+
+        scrollbar-width: 10px;
+        scrollbar-base-color: transparent;
+        scrollbar-color: #5d6f8177;
     }
 
     #answers-container {

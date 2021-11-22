@@ -8,18 +8,19 @@
     export let comment;
 </script>
 
-<div id="background" transition:fade />
-<div id="popup" transition:fly={{ y: 200, duration: 1500 }}>
+<div id="background" />
+<div id="popup" >
     <p>
         {content}
     </p>
     <textarea
         bind:value={comment}
         placeholder="You can leave comment here..."
+        maxlength="200"
     />
     <span class="control">
-        <GenericButton on:click={cancel}>Cancel</GenericButton>
-        <GenericButton on:click={submit}>Submit</GenericButton>
+        <GenericButton click={cancel}>Cancel</GenericButton>
+        <GenericButton click={submit}>Submit</GenericButton>
     </span>
 </div>
 

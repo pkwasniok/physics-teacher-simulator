@@ -1,13 +1,18 @@
 <script>
-    import { _user } from "../user";
+    import _user from "../user";
     import Button from "./Misc/Button.svelte";
 
     export let logout;
+    export let click;
 
     let user = null;
     _user.subscribable.subscribe((value) => {
         user = value;
     });
+
+    const handleClick = (n) => {
+        click(n)
+    }
 </script>
 
 <div>
@@ -16,10 +21,10 @@
     <span>
         {#if user != null}
             <img src={user.picture} alt="" />
-            <Button>You answers</Button>
-            <Button>Settings</Button>
+            <Button on:click={() => handleClick(0)}>You answers</Button>
+            <Button on:click={() => handleClick(1)}>Settings</Button>
             {#if user.superuser}
-                <Button>Superuser</Button>
+                <Button onpkwasniokpkwasniok:click={() => handleClick(2)}>Superuser</Button>
             {/if}
             <Button on:click={logout}>Logout</Button>
         {/if}

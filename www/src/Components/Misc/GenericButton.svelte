@@ -1,8 +1,15 @@
 <script>
     export let fontSize = 21;
+    export let disabled = false;
+    export let click
+
+    const handleClick = () => {
+        if(!disabled)
+            click()
+    }
 </script>
 
-<button style="font-size: {fontSize}px;" on:click> <slot /> </button>
+<button style="font-size: {fontSize}px;" class={disabled ? "disabled" : ""} on:click={() => handleClick()}> <slot /> </button>
 
 <style>
     button {
@@ -25,5 +32,14 @@
 
     button:hover {
         background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .disabled {
+        cursor: default;
+        color: rgba(255,255,255,0.3)
+    }
+
+    .disabled:hover{
+        background: transparent;
     }
 </style>

@@ -11,7 +11,7 @@
     });
 </script>
 
-<div transition:fly={{ y: -200, duration: 800 }}>
+<div >
     {#if ranking != null}
         <table>
             <tr>
