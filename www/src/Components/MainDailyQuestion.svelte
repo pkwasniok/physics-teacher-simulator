@@ -17,7 +17,8 @@
     });
 
     onMount(async () => {
-        daily_question = await api.get("daily_question");
+        daily_question = await api.get('daily_question?email="' + user.email + '"');
+        daily_question = daily_question.daily_question;
         _user.reAuthorize();
     });
 

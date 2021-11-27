@@ -1,5 +1,6 @@
 <script>
     import api from "../../api";
+    import _user from "../../user"
     import GenericButton from "./GenericButton.svelte";
     import PopupReview from "./PopupReview.svelte";
 
@@ -18,6 +19,11 @@
     if (answer.reviewed) {
         stars = stars.fill(true, 0, answer.points);
     }
+
+    let user = null;
+    _user.subscribable.subscribe((value) => {
+        user = value
+    })
 
     const formatDateTime = (datetime) => {
         let _datetime = new Date(Date.parse(datetime));
@@ -47,7 +53,7 @@
 
         const body = {
             answer_id: answer.id,
-            email: answer.email,
+            email: user.email,
             points: stars.filter(Boolean).length,
             comment: comment,
         };

@@ -57,16 +57,18 @@
 
         {answer.answer}
 
-        <div class='separator'>
-            <span class='separator-text'>Comments {comment_selector+1}/{answer.reviews.length}</span>
-            <span class='separator-line'/>
-        </div>
+        {#if answer.reviews.length > 0 && answer.reviews[0].comment != null}
+            <div class='separator'>
+                <span class='separator-text'>Comments {comment_selector+1}/{answer.reviews.length}</span>
+                <span class='separator-line'/>
+            </div>
 
-        <div class='comments'>
-            <img src="./img/arrow-left.png" alt="" on:click={() => handleArrowClick(false)}/>
-            <p>{answer.reviews[comment_selector].comment}</p>
-            <img src="./img/arrow-right.png" alt="" on:click={() => handleArrowClick(true)}/>
-        </div>
+            <div class='comments'>
+                <img src="./img/arrow-left.png" alt="" on:click={() => handleArrowClick(false)}/>
+                <p>{answer.reviews[comment_selector].comment}</p>
+                <img src="./img/arrow-right.png" alt="" on:click={() => handleArrowClick(true)}/>
+            </div>
+        {/if}
    </div>
 </div>
 

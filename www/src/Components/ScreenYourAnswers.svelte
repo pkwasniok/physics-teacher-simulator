@@ -17,7 +17,6 @@
     onMount(async () => {
         await _user.reAuthorize()
         answers = await api.get('user/answers?email=' + user.email)
-        console.log(answers)
     })
 </script>
 

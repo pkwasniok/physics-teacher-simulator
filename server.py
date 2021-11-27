@@ -15,6 +15,10 @@ questions = json.load(open('./questions.json', encoding='utf-8'))
 api = Flask(__name__)
 cors = CORS(api, resources={r"/*": {"origins": "*"}})
 
+# questions status
+# 0 - idle
+# 1 - daily_question
+# 2 - used
 
 def db_connect():  # Connecting to db
     return mysql.connector.connect(
@@ -229,22 +233,45 @@ def answer_review_post():
 
 @ api.route('/daily_question', methods=['GET'])     # Return todays daily question
 def daily_question():
-    # Load questions and config
-    questions = json.load(open('./questions.json', encoding='utf-8'))
-    config = json.load(open('./config.json', encoding='utf-8'))
+    mydb = db_connect()    
+    cursor = mydb.cursor()
 
-    # Check if there are any daily questions left
-    if len(config['daily_question']['daily_questions']) < 1:
-        config['daily_question']['daily_questions'] = questions['questions']
-        random.shuffle(daily_questions)
+    # Read daily questions queue
+    questions_queue = json.load(open('./questions.json'))
+    confgi = json.load(open('./config.json'))
 
-    # Update config.json file
-    with open('config.json', 'w') as f:
-        json.dump(config, f)
+    # Take new question when time is ok xD
+    now = _datetime.datetime.now()
+    then = _datetime.datetime.strptime(questions_queue['last_generation'], '%Y-%m-%d')
+    generation_hour = _datetime.datetime.strptime(config['daily_question']['generation_hour'], '%H:%M')
+    if (now-then).days >= 1 and len(questions_queue['queue']) > 0:
+        if now.hour >= generation_hour.hour and now.minute >= generation_hour.minute:
+            questions_queue['queue'].pop(0)
+            questions_queue['last_generation'] = now.strftime('%Y-%m-%d')
+            with open('./questions.json', 'w') as f:
+                json.dump(questions_queue, f)
 
-    # Create response
-    question = daily_questions[0]
-    response = {"status": "OK", "question": question['question'], 'branch': question['branch']}
+    # Generate new daily questions list if empty
+    if len(questions_queue['queue']) <= 0:
+        cursor.execute('SELECT id FROM questions')
+        questions_id = cursor.fetchall()
+
+        for id in questions_id:
+            questions_queue['queue'].append(id[0])
+
+        random.shuffle(questions_queue['queue'])        
+
+        with open('./questions.json', 'w') as f:
+            json.dump(questions_queue, f)
+           
+    # Generate response with daily questions
+    cursor.execute('SELECT author_email, question, branch FROM questions WHERE questions.id=' + str(questions_queue['queue'][0]))
+    daily_question = cursor.fetchall()[0]
+    response = {"status": "OK", "daily_question": {
+        "author_email": daily_question[0],
+        "question": daily_question[1],
+        "branch": daily_question[2]
+    }}
 
     # Return response
     return response

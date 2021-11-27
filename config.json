@@ -1,3 +1,11 @@
-{"database": {"host": "127.0.0.1", "user": "root", "password": "", "database": "physics_teacher_simulator"}, "daily_question": {
-    "daily_questions": [{"question": "Jaka jest r\u00f3\u017cnica pomi\u0119dzy pr\u0119dko\u015bci\u0105 k\u0105tow\u0105 a szybko\u015bci\u0105 k\u0105tow\u0105?", "branch": "Kinematyka"}, {"question": "Wyja\u015bnij czym jest przy\u015bpieszenie k\u0105towe", "branch": "Kinematyka"}, {"question": "Czym jest pr\u0119dko\u015b\u0107 k\u0105towa?", "branch": "Kinematyka"}, {"question": "Czym jest szybko\u015b\u0107 k\u0105towa?", "branch": "Kinematyka"}],
-    "last-generation": "2021-11-21Z08:00:00.000Z"}}
+{
+    "database": {
+        "host": "127.0.0.1", 
+        "user": "physics_teacher_simulator", 
+        "password": "", 
+        "database": "physics_teacher_simulator"
+    },
+    "daily_question": {
+        "generation_hour": "08:00"
+    }
+}

@@ -27,6 +27,8 @@
                 return 0;
             }
         });
+
+        console.log(answers)
     });
 
     const handleTabSubmit = async () => {
