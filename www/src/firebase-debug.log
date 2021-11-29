@@ -1,0 +1,13 @@
+[debug] [2021-11-28T14:57:31.864Z] ----------------------------------------------------------------------
+[debug] [2021-11-28T14:57:31.866Z] Command:       /usr/bin/node /usr/bin/firebase deploy
+[debug] [2021-11-28T14:57:31.866Z] CLI Version:   9.23.0
+[debug] [2021-11-28T14:57:31.866Z] Platform:      linux
+[debug] [2021-11-28T14:57:31.867Z] Node Version:  v16.11.1
+[debug] [2021-11-28T14:57:31.867Z] Time:          Sun Nov 28 2021 15:57:31 GMT+0100 (czas środkowoeuropejski standardowy)
+[debug] [2021-11-28T14:57:31.867Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-11-28T14:57:31.914Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-11-28T14:57:31.914Z] > authorizing via signed-in user (kwasniokpatryk@gmail.com)
+[debug] [2021-11-28T14:57:31.914Z] [iam] checking project physics-teacher-simulator for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-11-28T14:57:31.916Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/physics-teacher-simulator:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}

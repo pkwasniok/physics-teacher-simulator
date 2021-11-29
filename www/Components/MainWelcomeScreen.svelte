@@ -17,6 +17,7 @@
     </p>
     <img
         src="https://ultimastatus.com/wp-content/uploads/2021/06/whenn-all-the-forces-physics-meme.jpg"
+	alt="Essa"
     />
     <p id="greetings">Live long and prosper!</p>
     <Button on:click={login}>Login</Button>

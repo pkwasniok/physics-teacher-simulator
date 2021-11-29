@@ -1,6 +1,6 @@
 let config = {
     "backend": {
-        "ip": "http://127.0.0.1:5000/"
+        "ip": "https://91.233.251.92:2000/"
     },
     "auth0": {
         "domain": "dev--824ileu.us.auth0.com",

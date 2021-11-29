@@ -4,6 +4,7 @@ const get = async (endpoint) => {
     let response = await fetch(config.backend.ip + endpoint)
     response = await (response.json())
 
+
     if (response.status == 'OK') {
         return await response
     } else {
@@ -20,7 +21,6 @@ const post = async (endpoint, body) => {
             'Content-Type': 'application/json'
         }
     })
-
 }
 
 const api = {
